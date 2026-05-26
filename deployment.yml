@@ -1,0 +1,45 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: ccc-genai-wsp-005-gprods
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ccc-genai-wsp-005-gprods
+  template:
+    metadata:
+      labels:
+        app: ccc-genai-wsp-005-gprods
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: "type"
+                    operator: In
+                    values:
+                      - gpu
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: ccc-genai-wsp-005-gprods
+      containers:
+        - name: ccc-genai-wsp-005-gprods
+          ports:
+            - containerPort: 5010
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: ccc-genai-wsp-005-gprods
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  revisionHistoryLimit: 1
+  progressDeadlineSeconds: 1200

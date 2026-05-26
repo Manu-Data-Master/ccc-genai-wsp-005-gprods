@@ -1,0 +1,61 @@
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de entorno
+.env
+.env.local
+.env.*.local
+env
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+files/
+# Dependencias
+node_modules/
+.bower_components/
+
+# Compilación y artefactos
+dist/
+build/
+out/
+*.class
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.swp
+*.swo
+
+# IDEs y editores
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Sistema de control de versiones
+*.orig
+
+# Archivos de pruebas
+coverage/
+.nyc_output/
+junit.xml
+
+# Archivos temporales y backups
+*.bak
+*.tmp
+*.temp
+*.~*
+
+# Docker
+docker-compose.override.yml
+.env.docker
+
+# Otros
+*.lock
+*.log
+*.cache
+*.eslintcache
