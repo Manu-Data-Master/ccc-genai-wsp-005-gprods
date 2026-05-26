@@ -1,0 +1,199 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "KB API - ccc-genai-wsp-005-gprods",
+    "description": "Guía de Productos API: Recupera datos de la base de conocimiento.",
+    "version": "1.0.0"
+  },
+
+  "servers": [
+    {
+      "url": "https://ccc-genai-wsp-005-gprods-dev.ccc-ocp-dev-1-c6c024cbbeb3358936d7cd48e9b2b81a-0000.us-east.containers.appdomain.cloud",
+      "description": "Servidor Desarrollo"
+    },
+    {
+      "url": "https://ccc-genai-wsp-005-gprods-qa.ccc-ocp-dev-1-c6c024cbbeb3358936d7cd48e9b2b81a-0000.us-east.containers.appdomain.cloud",
+      "description": "Servidor Certificación"
+    },
+    {
+      "url": "https://ccc-genai-wsp-005-gprods-prd.ccc-ocp-prd-1-c6c024cbbeb3358936d7cd48e9b2b81a-0000.us-east.containers.appdomain.cloud",
+      "description": "Servidor Producción"
+    },
+    {
+      "url": "http://localhost:5010",
+      "description": "Servidor Local"
+    }
+  ],
+  "paths": {
+    "/get_rag_response": {
+      "post": {
+        "summary": "Recupera datos de la base de conocimiento.",
+        "description": "Recupera datos relevantes de la base de conocimientos en función de una consulta.",
+        "security": [{ "ApiKeyAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model_id",
+                  "conversation_history",
+                  "decoding_method",
+                  "temperature",
+                  "min_new_tokens",
+                  "max_new_tokens",
+                  "n_chunks",
+                  "top_k",
+                  "conversation_id"
+                ],
+                "properties": {
+                  "model_id": {
+                    "type": "string",
+                    "description": "Identificador del modelo Generative IA utilizado para generar las respuestas."
+                  },
+                  "conversation_history": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Historial de mensajes bot-cliente para dar contexto y generar la respuesta."
+                  },
+                  "decoding_method": {
+                    "type": "string",
+                    "description": "Método para generar texto: greedy (elige el token más probable) o sampling (selecciona al azar según probabilidad)."
+                  },
+                  "min_new_tokens": {
+                    "type": "integer",
+                    "description": "Mínimo de tokens que el modelo debe generar en la respuesta."
+                  },
+                  "max_new_tokens": {
+                    "type": "integer",
+                    "description": "Máximo de tokens permitidos para la generación."
+                  },
+                  "temperature": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Controla la creatividad ajustando la aleatoriedad de la generación."
+                  },
+                  "n_chunks": {
+                    "type": "integer",
+                    "description": "Número de fragmentos del contexto usados para enriquecer la respuesta."
+                  },
+                  "top_k": {
+                    "type": "integer",
+                    "description": "Limita la generación a los k tokens más probables en cada paso."
+                  },
+                  "conversation_id": {
+                    "type": "string",
+                    "description": "Identificador único para rastrear la conversación."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Datos de la base de conocimientos recuperados con éxito.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "llm_complete_response": {
+                      "type": "string",
+                      "description": "llm_complete_response."
+                    },
+                    "llm_first_stream_time": {
+                      "type": "number",
+                      "format": "float",
+                      "description": "Time taken for the first stream response."
+                    },
+                    "llm_request_id": {
+                      "type": "string",
+                      "description": "Unique identifier for the request."
+                    },
+                    "llm_timestamp_start_time": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when the request started."
+                    },
+                    "llm_timestamp_end_time": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when the request ended."
+                    },
+                    "llm_total_time": {
+                      "type": "number",
+                      "format": "float",
+                      "description": "Total processing time."
+                    },
+                    "responseSemanticAnswer": {
+                      "type": "string",
+                      "description": "The final response generated."
+                    },
+                    "semantic_search_time": {
+                      "type": "number",
+                      "format": "float",
+                      "description": "Time taken for semantic search."
+                    },
+                    "top_ids": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "description": "Lista de los principales identificadores."
+                    },
+                    "first_contact_resolution": {
+                      "type": "string",
+                      "description": "Indica si la consulta se resolvió en el primer contacto (true/false)."
+                    },
+                    "dominio_producto": {
+                      "type": "string",
+                      "description": "Dominio del producto."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Faltan parámetros obligatorios.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Parámetros faltantes."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Solicitud no autorizada debido a una clave API no válida.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "string", "example": "No autorizado." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-KEY"
+      }
+    }
+  }
+}
